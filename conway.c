@@ -268,7 +268,7 @@ void processInputs()
         speed += 10;
         if (speed > 1000)
             speed = 1000;
-        printf("Speed: %03f\n", speed);
+        printf("Speed: %03.0f\n", speed);
     }
     /* ENTER should clear the board, and then set game to paused */
     if (getFirstInput(ENTER))
