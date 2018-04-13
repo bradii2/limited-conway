@@ -261,7 +261,7 @@ void processInputs()
         speed -= 10;
         if (speed < 10)
             speed = 10;
-        printf("Speed: %03f\n", speed);
+        printf("Speed: %03.0f\n", speed);
     }
     if (getInput(DOWN_ARROW))
     {
