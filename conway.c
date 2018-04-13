@@ -82,6 +82,7 @@ int main(int argc, char *argv[])
 {
     SDL_Event e; /* Input event */
     int currTime, prevTime, passTime, lag = 0;
+    int i;
     init();
     prevTime = SDL_GetTicks();
     
@@ -101,8 +102,11 @@ int main(int argc, char *argv[])
             updateInputs(&e);
             /* This does stuff like make mouse click affect cells */
             /* It should call draw() aftera click */
-            processInputs();
         }
+        
+        processInputs();
+        /* Set prev array to be what the curr array is */
+        memcpy(prevInputs, currInputs, NUM_INPUTS * sizeof(int));
         
         /* Put this in a check with time to call it every (1 / speed) seconds */
         while (lag >= speed)
@@ -240,11 +244,13 @@ void setArr(int **arr, int x, int y, int w, int h, int val)
 
 void processInputs()
 {
-    int i, j;
+    int i;
+    
     if (getInput(L_CLICK) || getInput(R_CLICK))
     {
         gameBoard[MouseRect.x + (MouseRect.y * ROWS)] = getInput(L_CLICK);
     }
+    /* getFirstInput SPACE */
     if (getFirstInput(SPACE))
     {
         paused = !paused;
@@ -264,7 +270,7 @@ void processInputs()
             speed = 1000;
         printf("Speed: %03f\n", speed);
     }
-    /* ENTER should clear the board */
+    /* ENTER should clear the board, and then set game to paused */
     if (getFirstInput(ENTER))
     {
         for (i = 0; i < ROWS * COLS; ++i)
@@ -272,8 +278,11 @@ void processInputs()
             gameBoard[i] = 0;
             tempBoard[i] = 0;
         }
+        paused = 1;
+        printf("Paused: 1\n");
     }
     /* The 'S' button does a single step for the game */
+    /* Should be getFirstInput */
     if (getFirstInput(S) && paused)
     {
         tick();
@@ -284,8 +293,6 @@ void processInputs()
 
 void updateInputs(SDL_Event *e)
 {
-    /* Set prev array to be what the curr array is */
-    memcpy(prevInputs, currInputs, NUM_INPUTS * sizeof(int)); 
     switch(e->type)
     {
     /* MouseButtonEvent */
